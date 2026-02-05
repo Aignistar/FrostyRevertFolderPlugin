@@ -130,99 +130,7 @@ namespace RevertFolderPlugin
             // Open the menu under the button
             menu.IsOpen = true;
         });
-                
-        //public void RevertFolder(AssetEntry entry, bool refreshExplorer)
-        //{
-        //    if (entry == null)
-        //    {
-        //        FrostyMessageBox.Show("No valid asset selected.", "Revert Folder");
-        //        return;
-        //    }
-
-        //    string folderPath = entry.Path;
-        //    if (string.IsNullOrEmpty(folderPath))
-        //    {
-        //        FrostyMessageBox.Show("Please select an asset inside a folder.", "Revert Folder");
-        //        return;
-        //    }
-
-        //    // Close tabs beforehand (only for modified assets)
-        //    var assetsToRevert = GetAllAssetsInFolder(folderPath);
-
-        //    // Log list
-        //    List<string> logLines = new List<string>();
-        //    int totalReverted = 0;
-
-        //    foreach (var asset in assetsToRevert)
-        //    {
-        //        if (asset.IsModified)
-        //        {
-        //            CloseModifiedTab(asset);
-        //        }
-        //    }
-
-        //    // Execute revert in a TaskWindow
-        //    FrostyTaskWindow.Show("Reverting Assets", $"Reverting all assets in folder: {folderPath}", (task) =>
-        //    {
-        //        foreach (var asset in assetsToRevert)
-        //        {
-        //            if (asset.IsModified)
-        //            {
-        //                App.AssetManager.RevertAsset(asset, suppressOnModify: false);
-        //                totalReverted++;
-        //                logLines.Add($"Reverted: {asset.Name}");
-        //            }                        
-        //        }
-        //    });
-
-        //    // Show log in a message box
-        //    if (logLines.Count > 0)
-        //    {
-        //        string logMessage = string.Join(Environment.NewLine, logLines);
-        //        FrostyMessageBox.Show(
-        //            $"Total reverted assets: {totalReverted}\n\n{logMessage}",
-        //            "Revert Folder"
-        //        );
-        //    }
-        //    else
-        //    {
-        //        FrostyMessageBox.Show("No modified assets found to revert.", "Revert Folder");
-        //    }
-
-        //    // Update UI
-        //    App.EditorWindow.DataExplorer.RefreshItems();
-
-        //    if (!refreshExplorer)
-        //        return; // Do not adjust the view
-
-        //    App.EditorWindow.DataExplorer.ItemsSource = App.AssetManager.EnumerateEbx();
-
-        //    // Check if there are still assets in the folder
-        //    var remainingAssets = new List<AssetEntry>();
-        //    foreach (var asset in App.AssetManager.EnumerateEbx())
-        //    {
-        //        if (asset.Path.StartsWith(folderPath, StringComparison.OrdinalIgnoreCase))
-        //            remainingAssets.Add(asset);
-        //    }
-
-        //    if (remainingAssets.Count > 0)
-        //    {
-        //        App.EditorWindow.DataExplorer.SelectAsset(remainingAssets[0]);
-        //    }
-        //}
         
-        //private List<AssetEntry> GetAllAssetsInFolder(string folderPath)
-        //{
-        //    var result = new List<AssetEntry>();
-        //    foreach (var asset in App.AssetManager.EnumerateEbx())
-        //    {
-        //        if (asset.Path.StartsWith(folderPath, StringComparison.OrdinalIgnoreCase))
-        //            result.Add(asset);
-        //    }
-
-        //    return result;
-        //}
-
         private void RevertFolder(string folderPath, bool refreshExplorer, bool includeAllReferences)
         {
             if (string.IsNullOrEmpty(folderPath))
@@ -232,7 +140,7 @@ namespace RevertFolderPlugin
                     "Revert Folder"
                 );
                 return;
-            }
+            }            
 
             // Log list
             //List<string> logLines = new List<string>();
@@ -243,10 +151,13 @@ namespace RevertFolderPlugin
             // Collect all modified assets inside the folder
             foreach (var ebx in App.AssetManager.EnumerateEbx())
             {
-                if (ebx.IsModified &&
-                    ebx.Path.StartsWith(folderPath, StringComparison.OrdinalIgnoreCase))
+                if (ebx.IsModified)
                 {
-                    assetsToRevert.Add(ebx);
+                    // Make sure to only revert this folder and not ones that have the same prefix
+                    if (ebx.Path.Equals(folderPath, StringComparison.OrdinalIgnoreCase) || ebx.Path.StartsWith(folderPath + "/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        assetsToRevert.Add(ebx);
+                    }
                 }
             }
 
@@ -324,8 +235,14 @@ namespace RevertFolderPlugin
             var remainingAssets = new List<AssetEntry>();
             foreach (var asset in App.AssetManager.EnumerateEbx())
             {
-                if (asset.Path.StartsWith(folderPath, StringComparison.OrdinalIgnoreCase))
-                    remainingAssets.Add(asset);
+                if (asset.IsModified)
+                {
+                    // Make sure to only revert this folder and not ones that have the same prefix
+                    if (asset.Path.Equals(folderPath, StringComparison.OrdinalIgnoreCase) || asset.Path.StartsWith(folderPath + "/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        remainingAssets.Add(asset);
+                    }
+                }
             }
 
             if (remainingAssets.Count > 0)

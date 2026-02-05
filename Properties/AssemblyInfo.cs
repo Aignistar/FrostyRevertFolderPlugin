@@ -13,7 +13,7 @@ using System.Windows;
 
 [assembly: PluginDisplayName("Revert Folder")]
 [assembly: PluginAuthor("Aigni")]
-[assembly: PluginVersion("1.0.0.0")]
+[assembly: PluginVersion("1.0.1.0")]
 
 [assembly: RegisterDataExplorerContextMenu(typeof(RevertFolderContextMenuItem))]
 
@@ -24,4 +24,4 @@ using System.Windows;
 [assembly: AssemblyProduct("Revert Folder")]
 [assembly: AssemblyCopyright("Copyright © Aigni 2026")]
 
-[assembly: AssemblyVersion("1.0.0")]
+[assembly: AssemblyVersion("1.0.1")]
