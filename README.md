@@ -13,7 +13,7 @@ A [Frosty Editor (J-Lyt's Dragon Age Veilguard branch)](https://github.com/J-Lyt
 
 ## Installation
 
-Download the plugin from the [DA:Veilguard Modding Discord server](https://discord.gg/pKF9ReTdAh) (Frosty DEV -> plugins) and copy the RevertFolderPlugin.dll to Frosty Editor\Plugins.
+Download the plugin from [latest release](https://github.com/Aignistar/FrostyRevertFolderPlugin/releases/latest) and copy the RevertFolderPlugin.dll to Frosty Editor\Plugins.
 
 ## Compiling
 
